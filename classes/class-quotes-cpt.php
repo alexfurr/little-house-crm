@@ -287,13 +287,9 @@ class lh_quotes
         $post_id = $post->ID;
 
         $quote_status = get_post_meta($post_id,'quote_status',true);
-        if($quote_status==""){$quote_status=="not_sent";}
+        if($quote_status==""){$quote_status="not_sent";}
 
-        $status_array = array(
-            "not_sent" => "Not yet sent",
-            "pending" => "Sent, pending response",
-            "accepted" => "Accepted",
-        );
+        $status_array = lh_queries::get_quote_status_options();
 
         echo '<select name="post_status" id="post_status">';
         foreach ($status_array as $key => $value)
@@ -411,9 +407,6 @@ class lh_quotes
             update_post_meta( $post_id, 'secret', $new_secret );
         }
 
-
-
-
 	}
 
 
@@ -438,7 +431,10 @@ class lh_quotes
 		{
 			case "client":
             {
-                echo 'Get client';
+                $client_info = lh_queries::get_client_from_quote($post_ID);
+                echo $client_info['name'].'<br/>';
+                echo $client_info['address1'];
+
             }
 		}
 	}
@@ -470,9 +466,12 @@ class lh_quotes
 
         $content = 'Dear '.$first_name.',<br/>';
         $content.= 'Thanks for your interest in Little House<br/>';
-        $content.= 'Please find attached your quote for the XXXX as discussed<br/><br/>';
+        $content.= 'Here is the breakdown of content and labour TEXT TO BE SUPPLED BY AILSA<br/><br/>';
         $content.= '[lh_image]<br/>';
         $content.= '[lh_quote]<br/><br/>';
+
+        $content.= '[lh_accept_link]<br/>';
+
 
         $content.= '<br/>Any questions please let me know.<br/>';
         $content.= 'Best wishes,<br/>';

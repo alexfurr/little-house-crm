@@ -1,3 +1,19 @@
+.lh-button-primary
+{
+    background:#acd037;
+    padding:10px;
+    color:#f7f7f7;
+    border-radius:5px;
+    margin:10px;
+}
+
+a.lh-button-primary:hover
+{
+    color:#fff;
+    background:#178511;
+}
+
+
 #lh_total
 {
     font-weight: bold;
@@ -25,4 +41,42 @@
     margin-right:auto;
     max-width:900px;
 
+}
+
+
+
+/* Quote overoview on the quotes page */
+.quote_overview
+{
+    border:1px solid #666;
+    margin-right:20px;
+    padding:20px;
+    background:#fff;
+    margin-bottom:20px;
+}
+
+.quote_overview .quote_title
+{
+    font-size:20px;
+    margin-bottom:10px;
+}
+
+.quote_overview .quote_meta
+{
+    display: flex;
+}
+
+
+.quote_overview .quote_total
+{
+
+}
+
+.quote_overview .quote_image
+{
+    margin-left:auto;
+}
+.quote_overview .quote_total
+{
+    padding:5px;
 }

@@ -245,8 +245,8 @@ class lh_clients
             {
 
                 $client_name = get_the_title($post_ID);
-                echo 'View quotes<br/>';
-                echo '<a class="button-primary" href="post-new.php?post_type=lh_quotes&client_id='.$post_ID.'&post_title=Quote for '.$client_name.'">Create quote</a>';
+                echo '<a href="options.php?page=lh-quotes&client-id='.$post_ID.'" class="button-primary">View / create quotes</a><br/>';
+                //echo '<a class="button-primary" href="post-new.php?post_type=lh_quotes&client_id='.$post_ID.'&post_title=Quote for '.$client_name.'">Create quote</a>';
             }
 		}
 	}

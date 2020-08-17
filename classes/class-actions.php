@@ -16,7 +16,12 @@ class lh_actions
 
 
         $email_subject = $_POST['email_subject'];
-        $email_content = $_POST['email_content'].' and folder = '.$quotes_folder['folder_url'];
+        $email_content = nl2br($_POST['email_content']);
+
+        // Add proper link breaks i.e. convert BR to /n
+       // $breaks = array("<br />","<br>","<br/>");
+        //$email_content = str_ireplace($breaks, "\r\n", $email_content);
+
 
         $headers = array('Content-Type: text/html; charset=UTF-8'); // Make it send as HTML
         $attachments = array($pdf);
@@ -24,6 +29,10 @@ class lh_actions
 
         // Finally set the quote status to sent
         update_post_meta( $quote_id, 'quote_status', 'pending' );
+
+
+        // Update post date it was sent
+        update_post_meta( $quote_id, 'quote_date_sent', date('Y-m-d') );
 
     }
 

@@ -18,6 +18,7 @@ class lh_draw
 
         // Get the featured image
         $img_src = get_the_post_thumbnail_url( $quote_id, 'medium' );
+        $img = '';
 
         if($img_src)
         {
@@ -71,11 +72,18 @@ class lh_draw
 
         $quote_breakdown_str.= '</table></div>';
 
+        $quote_link = get_the_permalink($quote_id);
+        $secret = get_post_meta($quote_id, 'secret', true);
+
+        $accept_link = '<a href="'.$quote_link.'?secret='.$secret.'">Click here to accept the quote</a>';
 
 
         // replace the lh_iamge with the img
         $content = str_replace("[lh_image]", $img, $content);
         $content = str_replace("[lh_quote]", $quote_breakdown_str, $content);
+        $content = str_replace("[lh_accept_link]", $accept_link, $content);
+
+
 
         $html = '';
 
