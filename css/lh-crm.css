@@ -1,0 +1,28 @@
+#lh_total
+{
+    font-weight: bold;
+    font-size:22px;
+}
+
+
+.quote_subtotal
+{
+    font-weight: bold;
+
+}
+
+
+.quote_preview_wrap
+{
+    width:90%;
+    background:#fff;
+    /*padding:20px;*/
+    border:1px solid #666;
+    -webkit-box-shadow: 11px 13px 16px -15px rgba(0,0,0,0.75);
+    -moz-box-shadow: 11px 13px 16px -15px rgba(0,0,0,0.75);
+    box-shadow: 11px 13px 16px -15px rgba(0,0,0,0.75);
+    margin-left:auto;
+    margin-right:auto;
+    max-width:900px;
+
+}
