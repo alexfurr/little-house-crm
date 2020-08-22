@@ -22,7 +22,7 @@ class lh_clients
 		//Admin Menu
 		add_action( 'init',  array( $this, 'create_CPTs' ) );
 
-		//add_action( 'admin_menu', array( $this, 'create_admin_pages' ));
+		add_action( 'admin_menu', array( $this, 'create_admin_pages' ));
 
 		add_action( 'add_meta_boxes_lh_clients', array( $this, 'add_metaboxes' ));
 
@@ -38,7 +38,7 @@ class lh_clients
 		//add_filter('pre_get_posts', array($this, 'peer_projects_default_order'));
 
 		// Save additional project meta for the custom post
-		add_action( 'save_post', array($this, 'save_meta' ));
+		add_action( 'save_post_lh_clients', array($this, 'save_meta' ), 10, 3);
 
 
 
@@ -90,21 +90,28 @@ class lh_clients
 
         );
 
-
-
         register_post_type( 'lh_clients', $args );
 	}
 
 	function create_admin_pages()
 	{
-		/* Groups CSV Edit Page */
-		$parent_slug = "no_parent";
-		$page_title="Quotes";
-		$menu_title="";
-		$menu_slug="lh-quotes";
-		$function=  array( $this, 'draw_quote_page' );
-		$myCapability = "edit_others_pages";
-		add_submenu_page($parent_slug, $page_title, $menu_title, $myCapability, $menu_slug, $function);
+
+        $parent_slug = "no_parent";
+        $page_title="Touch Points";
+        $menu_title="";
+        $menu_slug="client-activity";
+        $function=  array( $this, 'draw_activity_page' );
+        $myCapability = "edit_others_pages";
+        add_submenu_page($parent_slug, $page_title, $menu_title, $myCapability, $menu_slug, $function);
+
+        $parent_slug = "no_parent";
+        $page_title="Touch Points Edit";
+        $menu_title="";
+        $menu_slug="client-activity-edit";
+        $function=  array( $this, 'draw_activity_edit_page' );
+        $myCapability = "edit_others_pages";
+        add_submenu_page($parent_slug, $page_title, $menu_title, $myCapability, $menu_slug, $function);
+
 
 	}
 
@@ -113,6 +120,18 @@ class lh_clients
 	{
 		include_once( LH_PLUGIN_PATH . '/admin/quotes.php' );
 	}
+
+    function draw_activity_page()
+    {
+        include_once( LH_PLUGIN_PATH . '/admin/activity.php' );
+    }
+
+    function draw_activity_edit_page()
+    {
+        include_once( LH_PLUGIN_PATH . '/admin/activity-edit.php' );
+    }
+
+
 
 
 
@@ -139,9 +158,34 @@ class lh_clients
 			$callbackArgs
 		);
 
+
+        global $post;
+
+         if(!isset($post))
+             return;
+
+         if($post->post_status == 'publish')
+         {
+             //Project Settings Metabox
+     		$id 			= 'quotes_link';
+     		$title 			= 'Quotes';
+     		$drawCallback 	= array( $this, 'draw_metabox_quotes_link' );
+     		$screen 		= 'lh_clients';
+     		$context 		= 'side';
+     		$priority 		= 'default';
+     		$callbackArgs 	= array();
+
+     		add_meta_box(
+     			$id,
+     			$title,
+     			$drawCallback,
+     			$screen,
+     			$context,
+     			$priority,
+     			$callbackArgs
+     		);
+         }
 	}
-
-
 
 
 	function draw_metabox_contact_info($post, $metabox)
@@ -181,8 +225,16 @@ class lh_clients
         echo '<input type="text" id="phone" name="phone" value = "'.$phone.'" />';
 	}
 
+    function draw_metabox_quotes_link($post, $metabox)
+    {
+        $client_id = $post->ID;
+        echo '<a href="options.php?page=lh-quotes&client-id='.$client_id.'" class="button-primary">View / create quotes</a><br/>';
+    }
+
+
+
 	// Save metabox data on edit slide
-	function save_meta ( $postID )
+	function save_meta ( $postID, $post, $update )
 	{
 
         // Check if nonce is set.
@@ -205,6 +257,23 @@ class lh_clients
             return;
         }
 
+
+        // Is this a new post?
+        $is_new = $post->post_date === $post->post_modified;
+        if ( $is_new )
+        {
+            // first publish
+            // applies to new post
+            $args = array(
+                "client_id" => $postID,
+                "activity_title" => 'Client Created',
+                "activity_content" => '',
+                "activity_date" => date('Y-m-d'),
+            );
+            lh_actions::activity_item_add($args);
+        }
+
+
         $address1 	= isset( $_POST['address1'] ) ? $_POST['address1'] : '';
         $address2 	= isset( $_POST['address2'] ) ? $_POST['address2'] : '';
         $postcode 	= isset( $_POST['postcode'] ) ? $_POST['postcode'] : '';
@@ -219,6 +288,9 @@ class lh_clients
         update_post_meta( $postID, 'phone', $phone );
         update_post_meta( $postID, 'town', $town );
 
+
+
+
 	}
 
 
@@ -227,9 +299,11 @@ class lh_clients
 	{
 
         unset($columns['date']);
-
+        $columns['activity'] = 'Touch Points';
         $columns['quotes'] = 'Quotes';
         $columns['date'] = 'Date';
+
+
 
         return $columns;
 	}
@@ -243,10 +317,16 @@ class lh_clients
 		{
 			case "quotes":
             {
-
                 $client_name = get_the_title($post_ID);
-                echo '<a href="options.php?page=lh-quotes&client-id='.$post_ID.'" class="button-primary">View / create quotes</a><br/>';
+                echo '<a href="options.php?page=lh-quotes&client-id='.$post_ID.'" class="button-primary">View / create quotes</a>';
                 //echo '<a class="button-primary" href="post-new.php?post_type=lh_quotes&client_id='.$post_ID.'&post_title=Quote for '.$client_name.'">Create quote</a>';
+                break;
+            }
+
+            case "activity":
+            {
+                echo '<a href="options.php?page=client-activity&client-id='.$post_ID.'" class="button-primary">Timeline</a>';
+                break;
             }
 		}
 	}

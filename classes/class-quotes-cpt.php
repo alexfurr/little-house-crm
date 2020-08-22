@@ -106,7 +106,6 @@ class lh_quotes
 		$myCapability = "edit_others_pages";
 		add_submenu_page($parent_slug, $page_title, $menu_title, $myCapability, $menu_slug, $function);
 
-        /* Groups CSV Edit Page */
         $parent_slug = "no_parent";
         $page_title="Quote Preview";
         $menu_title="";
@@ -114,6 +113,7 @@ class lh_quotes
         $function=  array( $this, 'draw_quote_preview_page' );
         $myCapability = "edit_others_pages";
         add_submenu_page($parent_slug, $page_title, $menu_title, $myCapability, $menu_slug, $function);
+
 
 	}
 
@@ -214,10 +214,6 @@ class lh_quotes
 			$priority,
 			$callbackArgs
 		);
-
-
-
-
 
 
 	}
@@ -342,9 +338,6 @@ class lh_quotes
 
         echo '<a href="options.php?page=quote-preview&id='.$post_id.'" class="button-primary">Preview / send quote</a>';
 
-
-
-
     }
 
 
@@ -465,16 +458,31 @@ class lh_quotes
         $first_name =  $arr[0]; // get the first name
 
         $content = 'Dear '.$first_name.',<br/>';
-        $content.= 'Thanks for your interest in Little House<br/>';
-        $content.= 'Here is the breakdown of content and labour TEXT TO BE SUPPLED BY AILSA<br/><br/>';
+        $content.= 'Thanks for your interest in Little House. Please find your quote broken down for the playhouse / play decks as discussed.<br/><br/>';
+        $content.= 'This price is only for the timber and labour and so does not include accessories such as the climbing wall holds or slide etc.  We can help you to source these, as required.<br/><br/>';
         $content.= '[lh_image]<br/>';
         $content.= '[lh_quote]<br/><br/>';
 
-        $content.= '[lh_accept_link]<br/>';
+
+        $content.='This quote is provided on the basis of the following assumptions:';
+        $content.='<ul>';
+        $content.='<li>Date of build will be agreed upon commission but is subject to the availability of timber</li>';
+        $content.='<li>Timber can transported to the build site (e.g. 3m lengths can fit through a side access or direct route through the house)</li>';
+        $content.='<li>Timber will be delivered to your home/build site on the day in advance of the build, usually the day prior to the build and will be stored in a safe, secure location.  Timber that is damaged after delivery but prior to build will require replacement at an additional cost.</li>';
+        $content.='<li><Water and electricity will be available for the duration of the build /li>';
+        $content.='<li>You will receive formal approval for the build from your immediate neighbours. </li>';
+        $content.='</ul>';
 
 
-        $content.= '<br/>Any questions please let me know.<br/>';
-        $content.= 'Best wishes,<br/>';
+
+
+        $content.= '<br/>If you would like to proceed and commission your Little House, a deposit of £500 is required, made payable to Barrington Innovation,  sort code 309034 account number 32156268.  The deposit will be deducted from your invoice upon completion of the build.<br/><br/>';
+        $content.='To accept this quote and kick start your Little House build, please click on the link below.<br/><br/>';
+        $content.= '[lh_accept_link]<br/><br/>';
+
+        $content.='If you have any queries or would like to discuss any aspect of the design, please contact Little House’s Client Liaison Ailsa Peron (contact details below), who will help answer any questions relating to your quote and who will help coordinate your build, if commissioned.<br/>';
+        $content.='Thank you again for your interest, and we hope to have the opportunity to bring your Little House to life soon!<br/><br/>';
+        $content.='Kind regards,<br/>';
         $content.= 'Alex Furr';
 
         return $content;
@@ -490,12 +498,16 @@ class lh_quotes
         // Get the first name
         $first_name = lh_crm_utils::get_first_name($client_fullname);
 
-        $content = 'Dear '.$first_name.',<br/>';
-        $content.= 'Please find attached your quote for the XXXXX as discussed<br/>';
+        $content = 'Dear '.$first_name.',<br/><br/>';
+        $content.= 'Please find attached your quote for the XXXXX as discussed.<br/>';
 
-        $content.= '<br/>Please do not hesitate to get in touch if you have any questions.<br/>';
-        $content.= 'Kind regards,<br/>';
-        $content.= 'Alex Furr';
+        $content.= '<br/>Please do not hesitate to get in touch if you have any questions or would like to discuss any aspect of the design.<br/><br/>';
+        $content.= 'Kind regards,<br/><br/>';
+        $content.= 'Ailsa Peron (Client Liaison)';
+
+        $content.=LH_SIGNATURE;
+
+
 
         return $content;
     }

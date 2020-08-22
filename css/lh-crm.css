@@ -13,6 +13,11 @@ a.lh-button-primary:hover
     background:#178511;
 }
 
+a.lh-button-primary:visited
+{
+    color:#f7f7f7;
+}
+
 
 #lh_total
 {
@@ -79,4 +84,55 @@ a.lh-button-primary:hover
 .quote_overview .quote_total
 {
     padding:5px;
+}
+
+
+/* Custom editor font */
+body#tinymce {
+    font-family: sans-serif;
+    font-size:12px;
+}
+
+
+
+/* Disable the quote accept link */
+.disabled_link{
+    cursor: default;
+    pointer-events: none;
+    text-decoration: none;
+    background:#f0f0f0;
+    border:1px solid #f7f7f7;
+    color:#ccc;
+}
+
+.quote_checklist_div
+{
+    margin-left:auto;
+    margin-right:auto;
+    width:80%;
+}
+
+#quote_checklist
+{
+    text-align: left;
+}
+
+ul#quote_checklist
+{
+    list-style:none;
+}
+
+#quote_checklist input
+{
+    margin-right:20px;
+}
+
+
+
+.timeline_item
+{
+    padding:10px;
+    border:1px solid #ccc;
+    background:#fff;
+    margin:10px 0px;
 }

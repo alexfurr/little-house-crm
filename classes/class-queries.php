@@ -66,6 +66,7 @@ class lh_queries
         $email = get_post_meta($client_id,'email',true);
         $phone = get_post_meta($client_id,'phone',true);
 
+        $client_meta['client_id'] = $client_id;
         $client_meta['name'] = $client_name;
         $client_meta['address1'] = $address1;
         $client_meta['address2'] = $address2;
@@ -162,6 +163,29 @@ class lh_queries
 
         return $status_array;
 
+    }
+
+    public static function get_client_activity($client_id)
+    {
+        global $wpdb;
+        global $lh_activity_db;
+
+        $sql = "SELECT * FROM $lh_activity_db WHERE client_id= $client_id ORDER by activity_date ASC";
+
+        $activity_items =  $wpdb->get_results( $sql );
+        return $activity_items;
+
+    }
+
+    public static function get_activity_info($item_id)
+    {
+        global $wpdb;
+        global $lh_activity_db;
+
+        $sql = "SELECT * FROM $lh_activity_db WHERE id= $item_id";
+
+        $activity_info =  $wpdb->get_row( $sql );
+        return $activity_info;
     }
 }
 ?>

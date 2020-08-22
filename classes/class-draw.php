@@ -107,7 +107,7 @@ class lh_draw
         $html.='<tr><td style="padding:0px; border:0px;">';
 
         // Header
-        $logo_src = LH_PLUGIN_URL.'/images/lh_logo.png';
+        $logo_src = LH_EMAIL_LOGO;
         $html.='<table style="margin:0px; background:'.$primary_color.';color:#fff;">';
         $html.='<tr>';
         $html.='<td style="width:70px; border:0px;">';

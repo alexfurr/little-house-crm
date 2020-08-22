@@ -21,7 +21,7 @@ if (filter_var($client_email, FILTER_VALIDATE_EMAIL)) {
 
 $email_text = 'test';
 
-$default_subject = 'Quote from Little House';
+$default_subject = 'Your Little House Quote';
 
 $default_email_text = lh_quotes::default_email_content($quote_id);
 
