@@ -82,7 +82,7 @@ class lh_quotes
            'publicly_queryable' => true,
            'show_ui'            => true,
            'show_in_nav_menus'	 => true,
-           'show_in_menu'       => true,
+           'show_in_menu'       => false,
            'query_var'          => true,
            'rewrite' => array( 'slug' => 'clients' ),
            'capability_type'    => 'page',
@@ -161,7 +161,7 @@ class lh_quotes
         }
 
         $id 			= 'quote_status';
-        $title 			= 'Quote Status';
+        $title 			= 'Project Status';
         $drawCallback 	= array( $this, 'draw_metabox_quote_status' );
         $screen 		= 'lh_quotes';
         $context 		= 'side';
@@ -283,19 +283,72 @@ class lh_quotes
         $post_id = $post->ID;
 
         $quote_status = get_post_meta($post_id,'quote_status',true);
+        $deposit_status = get_post_meta($post_id,'deposit_status',true);
+        $materials_status = get_post_meta($post_id,'materials_status',true);
+        $accessories_status = get_post_meta($post_id,'accessories_status',true);
+        $build_date = get_post_meta($post_id,'build_date',true);
+
         if($quote_status==""){$quote_status="not_sent";}
 
-        $status_array = lh_queries::get_quote_status_options();
 
-        echo '<select name="post_status" id="post_status">';
-        foreach ($status_array as $key => $value)
-        {
-            echo '<option value="'.$key.'"';
-            if($quote_status==$key){echo ' selected ';}
-            echo '>';
-            echo $value.'</option>';
-        }
-        echo '</select>';
+        // Draw the quote status
+        $status_array = lh_queries::get_quote_status_options();
+        $args = array(
+            "type" => "dropdown",
+            "name" => "quote_status",
+            "value" => $quote_status,
+            "ID" => "quote_status",
+            "label" => "Quote Status",
+            "options" => $status_array,
+
+        );
+        echo ek_forms::form_item($args);
+
+
+        // Draw the deposit status
+        $args = array(
+            "type" => "dropdown",
+            "name" => "deposit_status",
+            "value" => $deposit_status,
+            "ID" => "deposit_status",
+            "label" => "Deposit Status",
+            "options" => array(
+                "" => "Not Paid",
+                "paid" => "Paid",
+            ),
+        );
+        echo ek_forms::form_item($args);
+
+        // Draw the materials status
+        $args = array(
+            "type" => "dropdown",
+            "name" => "materials_status",
+            "value" => $materials_status,
+            "ID" => "materials_status",
+            "label" => "Materials Status",
+            "options" => array(
+                "" => "Not Ordered",
+                "ordered" => "Ordered",
+            ),
+        );
+        echo ek_forms::form_item($args);
+
+        // Draw the accesories status
+        $args = array(
+            "type" => "dropdown",
+            "name" => "accessories_status",
+            "value" => $accessories_status,
+            "ID" => "accessories_status",
+            "label" => "Critical Accessories Status",
+            "options" => array(
+                "" => "Not Arrived",
+                "arrived" => "Arrived",
+                "na" => "N/A",
+            ),
+        );
+        echo ek_forms::form_item($args);
+
+
     }
 
 
@@ -390,9 +443,61 @@ class lh_quotes
         $quote_status = $_POST['quote_status'];
         update_post_meta( $post_id, 'quote_status', $quote_status );
 
+        // Update deposit status
+        $deposit_status = $_POST['deposit_status'];
+        // check current deposit status. If it's not paid and its being changed add to timeline
+        $current_deposit_status = get_post_meta($post_id,'deposit_status',true);
+        if($current_deposit_status<>"paid" && $deposit_status=="paid")
+        {
+
+            // Update the client timeline
+            $args = array(
+                "client_id" => $client_id,
+                "project_id" => $post_id,
+                "activity_title" => 'Deposit Paid',
+                "activity_content" => '',
+            );
+            lh_actions::activity_item_add($args);
+        }
+        update_post_meta( $post_id, 'deposit_status', $deposit_status );
+
+        // Update materials status
+        $materials_status = $_POST['materials_status'];
+        // check current status and add to timeline if required
+        $current_materials_status = get_post_meta($post_id,'materials_status',true);
+        if($current_materials_status<>"ordered" && $materials_status=="ordered")
+        {
+
+            // Update the client timeline
+            $args = array(
+                "client_id" => $client_id,
+                "project_id" => $post_id,
+                "activity_title" => 'Materials Ordered',
+                "activity_content" => '',
+            );
+            lh_actions::activity_item_add($args);
+        }
+        update_post_meta( $post_id, 'materials_status', $materials_status );
+
+        // Update accessories status
+        $accessories_status = $_POST['accessories_status'];
+        // check current status and add to timeline if required
+        $current_accessories_status = get_post_meta($post_id,'accessories_status',true);
+        if($current_accessories_status<>"arrived" && $accessories_status=="arrived")
+        {
+            // Update the client timeline
+            $args = array(
+                "client_id" => $client_id,
+                "project_id" => $post_id,
+                "activity_title" => 'Critical Accessories Arrived',
+                "activity_content" => '',
+            );
+            lh_actions::activity_item_add($args);
+        }
+        update_post_meta( $post_id, 'accessories_status', $accessories_status );
+
         // Finally see if there is a descret key - if not create one
         $secret =  get_post_meta($post_id,'secret',true);
-
 
         if($secret=="")
         {

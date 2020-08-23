@@ -1,3 +1,35 @@
+.success_text
+{
+    color:#38631d;
+}
+
+.alert_text
+{
+    color:#db7e21;
+}
+
+.fail_text
+{
+    color:#c22121;
+}
+
+.success_background
+{
+    background:#f5fff0;
+}
+
+.alert_background
+{
+    background:#fffaf0;
+}
+
+.fail_background
+{
+    background:#fff4f0;
+}
+
+
+
 .lh-button-primary
 {
     background:#acd037;
@@ -135,4 +167,40 @@ ul#quote_checklist
     border:1px solid #ccc;
     background:#fff;
     margin:10px 0px;
+}
+
+
+
+.project_status_boxes
+{
+    display:flex;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+.project_status_boxes .status_box_item
+{
+    flex:1;
+    min-width:120px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    margin-right:10px;
+}
+
+.project_status_boxes .status_box_title
+{
+    background:#666;
+    color:#fff;
+    padding:5px;
+    margin-top: auto;
+}
+
+.project_status_boxes .quote_price_class
+{
+    font-size:30px;
+}
+
+.project_status_boxes .quote_meta_value
+{
+    padding:20px;
 }

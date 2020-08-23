@@ -138,12 +138,21 @@ class lh_queries
             $quote_status = get_post_meta($quote_id,'quote_status',true);
             $quote_total = get_post_meta($quote_id,'quote_total',true);
             $quote_date_sent = get_post_meta($quote_id,'quote_date_sent',true);
+            $quote_date_sent = get_post_meta($quote_id,'quote_date_sent',true);
+            $deposit_status = get_post_meta($quote_id,'deposit_status',true);
+            $materials_status = get_post_meta($quote_id,'materials_status',true);
+            $accessories_status = get_post_meta($quote_id,'accessories_status',true);
+            $build_date = get_post_meta($quote_id,'build_date',true);
 
             $quotes_array[$quote_id] = array(
                 'quote_title' => $quote_title,
                 'quote_status' => $quote_status,
                 'quote_total' => $quote_total,
                 'quote_date_sent' => $quote_date_sent,
+                'deposit_status' => $deposit_status,
+                'materials_status' => $materials_status,
+                'accessories_status' => $accessories_status,
+                'build_date' => $build_date,
             );
 
         }
@@ -170,7 +179,7 @@ class lh_queries
         global $wpdb;
         global $lh_activity_db;
 
-        $sql = "SELECT * FROM $lh_activity_db WHERE client_id= $client_id ORDER by activity_date ASC";
+        $sql = "SELECT * FROM $lh_activity_db WHERE client_id= $client_id ORDER by activity_date DESC";
 
         $activity_items =  $wpdb->get_results( $sql );
         return $activity_items;

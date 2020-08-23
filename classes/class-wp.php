@@ -43,6 +43,8 @@ class lh_crm
 
         wp_enqueue_style('lh_quotes_css', plugins_url('../css/lh-crm.css',__FILE__) );
         wp_enqueue_script('lh_quotes_js', plugins_url('../js/quote.js',__FILE__) ); #
+        wp_enqueue_style( 'imperial-font-awesome', '//use.fontawesome.com/releases/v5.2.0/css/all.css' );
+
 
 
     }

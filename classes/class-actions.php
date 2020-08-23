@@ -31,14 +31,14 @@ class lh_actions
 
 
         // Update post date it was sent
-        update_post_meta( $quote_id, 'quote_date_sent', date('Y-m-d') );
+        update_post_meta( $quote_id, 'quote_date_sent', date('Y-m-d H:i:s') );
 
         // Update the client timeline
         $args = array(
             "client_id" => $client_id,
+            "project_id" => $quote_id,
             "activity_title" => 'Quote Sent',
             "activity_content" => 'Quote was sent to '.$client_email,
-            "activity_date" => date('Y-m-d'),
         );
         lh_actions::activity_item_add($args);
 
@@ -77,9 +77,9 @@ class lh_actions
         // Update the client timeline
         $args = array(
             "client_id" => $client_id,
+            "project_id" => $quote_id,
             "activity_title" => 'Quote Accepted',
             "activity_content" => 'Quote accepted by '.$client_name,
-            "activity_date" => date('Y-m-d'),
         );
         lh_actions::activity_item_add($args);
 
@@ -94,11 +94,10 @@ class lh_actions
         $item_id = $_POST['item_id'];
 
         $client_id = $_POST['client_id'];
+        $project_id = $_POST['project_id'];
         $activity_title = $_POST['activity_title'];
         $activity_content = $_POST['activity_content'];
         $activity_date = $_POST['activity_date'];
-
-
 
         if($item_id)
         {
@@ -124,6 +123,7 @@ class lh_actions
                 "activity_title" => $activity_title,
                 "activity_content" => $activity_content,
                 "activity_date" => $activity_date,
+                "project_id" => $project_id,
             );
             lh_actions::activity_item_add($args);
 
@@ -143,16 +143,33 @@ class lh_actions
         $client_id = $args['client_id'];
         $activity_title = $args['activity_title'];
         $activity_content = $args['activity_content'];
-        $activity_date = $args['activity_date'];
+        if(isset($args['activity_date']) )
+        {
+            $activity_date = $args['activity_date'];
+        }
+        else
+        {
+            $activity_date = date('Y-m-d H:i:s');
+        }
+
+        if(isset($args['project_id']) )
+        {
+            $project_id = $args['project_id'];
+        }
+        else
+        {
+            $project_id = '';
+        }
 
         $wpdb->query( $wpdb->prepare(
-        "INSERT INTO ".$lh_activity_db." (client_id, activity_title, activity_content, activity_date)
-        VALUES ( %d, %s, %s, %s )",
+        "INSERT INTO ".$lh_activity_db." (client_id, activity_title, activity_content, activity_date, project_id)
+        VALUES ( %d, %s, %s, %s, %d )",
         array(
             $client_id,
             $activity_title,
             $activity_content,
-            $activity_date
+            $activity_date,
+            $project_id
             )
         ));
 

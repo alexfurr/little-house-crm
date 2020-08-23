@@ -268,7 +268,6 @@ class lh_clients
                 "client_id" => $postID,
                 "activity_title" => 'Client Created',
                 "activity_content" => '',
-                "activity_date" => date('Y-m-d'),
             );
             lh_actions::activity_item_add($args);
         }

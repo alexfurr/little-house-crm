@@ -4,7 +4,7 @@ $lh_database = new lh_database();
 
 class lh_database
 {
-	var $DBversion 		= '1.1';
+	var $DBversion 		= '1.2';
 
 	//~~~~~
 	function __construct ()
@@ -58,6 +58,7 @@ class lh_database
             activity_title varchar(255),
 			activity_content longtext,
             activity_date datetime,
+            project_id int,
 			INDEX client_id (client_id),
 			PRIMARY KEY (id)
 
