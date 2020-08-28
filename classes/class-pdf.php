@@ -40,7 +40,8 @@ class lh_crm_pdf
 
 
     	//--- init TCpdf ---------------------------------------
-    	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    	//$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new LITTLEHOUSE_PDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
 
 
     	// set document information
@@ -72,7 +73,10 @@ class lh_crm_pdf
     	//--- build the contents ---------------------------------------
 
 
-        //$htmlStr =  lh_draw::draw_quote($quote_id);
+        //$htmlStr = lh_draw::draw_quote($quote_id);
+        $htmlStr = lh_draw::draw_quote_for_pdf($quote_id);
+        
+        /*
         // Header
         $html = '';
         $logo_src = 'http://localhost/littlehouse/wp-content/uploads/2020/08/logo_white_back.png';
@@ -91,10 +95,14 @@ class lh_crm_pdf
 		$cssStr .= 'a:visited { color:' . $link_hex . '; } ';
 		$cssStr .= ' </style>';
 
-
+        
+        $htmlStr = 'PDF content';
+        */
+        
 		$pdf->AddPage();
 		$pdf->writeHTML	(
-			$cssStr . $html,
+			//$cssStr . $html,
+            $htmlStr,
 			true,
 			false,
 			false,
