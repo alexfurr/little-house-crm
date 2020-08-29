@@ -9,8 +9,6 @@ class lh_draw
         // Some default vars for the HTML emai
         $cellpadding = ' style="padding:5px;" ';
 
-        $primary_color = "#acd037";
-
 
         $quote_info = get_page( $quote_id );
         $content = apply_filters('the_content', $quote_info->post_content);
@@ -108,7 +106,7 @@ class lh_draw
 
         // Header
         $logo_src = LH_EMAIL_LOGO;
-        $html.='<table style="margin:0px; background:'.$primary_color.';color:#fff;">';
+        $html.='<table style="margin:0px; background:'.PRIMARY_COLOR.';color:#fff;">';
         $html.='<tr>';
         $html.='<td style="width:70px; border:0px;">';
         $html.='<img src = "'.$logo_src.'" height="60px" width="60px">';
@@ -151,6 +149,121 @@ class lh_draw
 
     }
 
+    public static function draw_invoice($quote_id)
+    {
+        $html = '';
+
+        $quote_meta = get_post_meta($quote_id);
+
+        $quote_meta_array = array(
+            'client_id',
+            'quote_total',
+            'deposit_status',
+
+        );
+
+        foreach ($quote_meta_array as $meta_key)
+        {
+            // Set to blank by default
+            $$meta_key = '';
+
+            // If it exists set the var to be the value
+            if(array_key_exists($meta_key, $quote_meta) )
+            {
+                $$meta_key = $quote_meta[$meta_key][0];
+            }
+        }
+
+        $address1 = get_post_meta($client_id,'address1',true);
+        $address2 = get_post_meta($client_id,'address2',true);
+        $town = get_post_meta($client_id,'town',true);
+        $postcode = get_post_meta($client_id,'postcode',true);
+        $email = get_post_meta($client_id,'postcode',true);
+        $phone = get_post_meta($client_id,'phone',true);
+
+        // Calculate the invoice left to pay
+
+        $deposit_paid = 0;
+        if($deposit_status=="paid")
+        {
+            $deposit_paid = "500";
+        }
+
+
+        $client_name = get_the_title($client_id);
+        $first_name = lh_crm_utils::get_first_name($client_name);
+
+        $html.= '<table width="100%" style="margin:0px">';
+        $html.='<tr><td style="padding:0px; border:0px;">';
+
+        // Header
+        $logo_src = LH_EMAIL_LOGO;
+        $html.='<table style="margin:0px; background:'.PRIMARY_COLOR.';color:#fff;">';
+        $html.='<tr>';
+        $html.='<td style="width:70px; border:0px;">';
+        $html.='<img src = "'.$logo_src.'" height="60px" width="60px">';
+        $html.='</td>';
+        $html.='<td style="border:0px; width:100%; font-size:24px;">Little House</td>';
+
+        $html.='</tr></table>';
+        // End of header
+
+        $html.='</td></tr>';
+        $html.= '<tr><td>';
+
+        // Main content outside header
+        $html.='<table style="width:80%; margin-left: auto;   margin-right:auto; ">';
+        $html.='<td style="text-align: right; font-size:10px; border:0px;">';
+        $html.= "Invoice #LH-INV-".$quote_id."<br/>Date : ".date('d/m/y');
+        $html.= '</td></tr>';
+        $html.= '<tr><td style="font-size:10px; border:0px; ">';
+        $html.= '<strong>'.$client_name.'</strong><br/>';
+        if($address1){$html.= ''.$address1.'<br/>';}
+        if($address2){$html.= ''.$address2.'<br/>';}
+        if($postcode){$html.= ''.$postcode.'<br/>';}
+        $html.= '</td>';
+
+        // The main letter content
+        $html.='<tr><td style="border:0px; padding-left:50px; padding-right:50px; font-size:14px;">';
+       // $html.=$content;
+
+       $html.='Dear '.$first_name.'<br/><br/>';
+       $html.='Thank you for choosing Little House!<br/>';
+       $html.='Please find the outstanding balance to be paid for your Little House below.  We would appreciate it if you could please settle the balance within 30 days of receiving this invoice.<br/><br/>';
+
+
+       $left_to_pay = $quote_total - $deposit_paid;
+       $html.='Cost : £'.$quote_total.'<br/>';
+       $html.='Deposit Paid : £'.$deposit_paid.'<br/>';
+       $html.='Outstanding Balance : £'.$left_to_pay.'<br/>';
+       $html.='Account Holder: '.BANK_AC_NAME.'<br/>';
+       $html.='Sort Code: '.BANK_SC.'<br/>';
+       $html.='Account number: '.BANK_AC_NUMBER.'<br/><br/>';
+
+       $html.='If you have any queries about your Little House, please do not hesitate to get in touch.<br/><br/>';
+       $html.='Kind Regards,<br/>';
+
+       $html.=LH_SIGNATURE;
+
+
+
+       // end of content
+        $html.='</td></tr>';
+        $html.='</table>';
+
+        // Start ofr footer
+        $html.='</td></tr>';
+
+        $html.= '</table>';
+
+
+        return $html;
+
+
+
+
+    }
+
     public static function feedback()
     {
         if(isset($_GET['feedback']) )
@@ -162,6 +275,10 @@ class lh_draw
             {
                 case "quote_sent":
                 $feedback_str = 'Quote sent!';
+                break;
+
+                case "invoice_sent":
+                $feedback_str = 'Invoice sent!';
                 break;
 
             }

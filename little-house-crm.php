@@ -27,6 +27,9 @@ include_once( LH_PLUGIN_PATH . '/classes/class-actions.php' );
 include_once( LH_PLUGIN_PATH . '/classes/class-utils.php' );
 include_once( LH_PLUGIN_PATH . '/classes/class-pdf.php' );
 include_once( LH_PLUGIN_PATH . '/classes/class-db.php' );
+include_once( LH_PLUGIN_PATH . '/classes/class-calendar.php' );
+include_once( LH_PLUGIN_PATH . '/classes/class-ajax.php' );
+
 include_once( LH_PLUGIN_PATH . '/classes/class-php-utils.php' ); // Include this always
 
 
@@ -47,6 +50,15 @@ if (!defined("PDF_CREATOR") )
 
 // Extension class for TCPDF Library
 include_once( LH_PLUGIN_PATH . '/classes/class-extend-tcpdf.php' );
+
+
+// Other defines
+define( 'PRIMARY_COLOR', "#acd037" );
+define( 'BANK_SC', "30-90-34" );
+define( 'BANK_AC_NUMBER', "32156268" );
+define( 'BANK_AC_NAME', "Barrington Innovation Ltd" );
+
+define( 'DEPOSIT_DAY_LIMIT', 14 ); // Number of days after accepting the quote required to pay deposit
 
 
 

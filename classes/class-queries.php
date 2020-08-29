@@ -6,7 +6,7 @@ class lh_queries
         $my_items = array();
 
         $my_items["quote_element_4by4"] = array(
-            "name" => "4 by 4 trested newel posts",
+            "name" => "4 by 4 treated newel posts",
             "cost" => "30",
             "unit"  => "each",
         );
@@ -142,6 +142,8 @@ class lh_queries
             $deposit_status = get_post_meta($quote_id,'deposit_status',true);
             $materials_status = get_post_meta($quote_id,'materials_status',true);
             $accessories_status = get_post_meta($quote_id,'accessories_status',true);
+            $invoice_sent = get_post_meta($quote_id,'invoice_sent',true);
+            $invoice_paid = get_post_meta($quote_id,'invoice_paid',true);
             $build_date = get_post_meta($quote_id,'build_date',true);
 
             $quotes_array[$quote_id] = array(
@@ -152,6 +154,8 @@ class lh_queries
                 'deposit_status' => $deposit_status,
                 'materials_status' => $materials_status,
                 'accessories_status' => $accessories_status,
+                'invoice_sent' => $invoice_sent,
+                'invoice_paid' => $invoice_paid,
                 'build_date' => $build_date,
             );
 
@@ -195,6 +199,32 @@ class lh_queries
 
         $activity_info =  $wpdb->get_row( $sql );
         return $activity_info;
+    }
+
+    public static function get_accepted_quotes()
+    {
+        $args = array(
+            'posts_per_page'   => -1,
+            'orderby'           => 'title',
+            'order'            => 'ASC',
+            'post_type'        => 'lh_quotes',
+            'post_status'      => 'publish',
+
+            // more args here
+            'meta_query' => array(
+            // meta query takes an array of arrays, watch out for this!
+                array(
+                'key'     => 'quote_status',
+                'value'   => 'accepted',
+                'compare' => '='
+                ),
+            )
+
+        );
+        $posts_array = get_posts( $args );
+        return $posts_array;
+
+
     }
 }
 ?>

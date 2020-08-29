@@ -143,6 +143,7 @@ class ek_forms
 
             case "date":
                 if($value==""){$value = date('Y-m-d');}
+                if($value=="null"){$value='';} // allow it to be blank if required
 
                 $html.= '<label for="'.$ID.'">'.$label.'</label>';
                 $html.=  '<input type="text" name="'.$ID.'" id="'.$ID.'" value="'.$value.'"/>';

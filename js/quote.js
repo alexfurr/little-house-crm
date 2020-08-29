@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
 
 function update_quote_calculator()
 {
-    var total_cost = 0;        console.log("called123");
+    var total_cost = 0;
 
 
     // go through each element and recalculate quote price

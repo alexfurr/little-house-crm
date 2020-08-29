@@ -1,0 +1,163 @@
+#calendar_wrap
+{
+	min-width: 500px;
+    margin-right:20px;
+
+}
+
+.month {
+	height: 100%;
+}
+
+.week {
+	display: flex;
+	border-bottom:1px solid #ccc;
+}
+
+.day {
+	color: #ccc;
+	padding: 5px;
+	flex: 1 1 0;
+	text-align:center;
+	align-items: center;
+	justify-content: center;
+    border:1px solid #ccc;
+}
+
+.day_number
+{
+    font-size:20px;
+	font-weight:100;
+    color:#000;
+    text-align: left;
+}
+
+/* Mon - Sunday black bar */
+.day_name
+{
+	background:	#000;
+	color:#fff;
+	padding:10px;
+	font-size:14px;
+	font-weight:100;
+}
+
+.day .has_slots
+{
+		background:#0F8291;
+		color:#fff;
+		font-weight:bold;
+}
+
+.day .has_slots:hover
+{
+	cursor:pointer;
+	background:#c1cbcc;
+	color:#0F8291;
+	border:#0F8291;
+
+
+}
+
+
+/* top title diusplay e.g. Mar 2018 */
+.month_wrapper
+{
+	background:#0F8291;
+	color:#fff;
+	width:100%;
+	text-align:center;
+    display: flex;
+    justify-content: space-between;
+	align-items: center;
+    height:90px;
+}
+
+
+.month_name
+{
+	padding:5px;
+}
+
+.month_wrapper .month_name .current_year
+{
+	font-size:20px;
+    margin:10px;
+
+}
+
+
+.month_wrapper .month_name
+{
+	font-size:50px;
+	font-family:'Roboto', sans-serif;
+	font-weight:100;
+    margin-bottom:20px;
+}
+
+.prev_month_link, .next_month_link
+{
+	padding:10px;
+}
+
+.prev_month_link
+{
+	width: 100px;
+	text-align:left;
+}
+
+
+.next_month_link
+{
+	width: 100px;
+	text-align:right;
+}
+
+
+.load_cal_month
+{
+	color:#ccc;
+	font-size:40px;
+}
+.load_cal_month:hover
+{
+	cursor:pointer;
+	color:#fff;
+}
+
+
+.day_content
+{
+    text-align:left;
+    color:#666;
+}
+
+.current_month
+{
+    margin:10px;
+}
+
+
+
+
+/* Calendar item classes */
+
+.day_content > div
+{
+    border:2px solid;
+    padding:5px;
+    margin:5px 0px;
+}
+
+
+.day_content .project_start
+{
+    border-color:#3277a8;
+    background:#dde6ed;
+}
+
+.day_content .reminder
+{
+    border-color:#b52121;
+    background:#f5cece;
+}

@@ -114,6 +114,14 @@ class lh_quotes
         $myCapability = "edit_others_pages";
         add_submenu_page($parent_slug, $page_title, $menu_title, $myCapability, $menu_slug, $function);
 
+        $parent_slug = "no_parent";
+        $page_title="Invoice Preview";
+        $menu_title="";
+        $menu_slug="invoice-preview";
+        $function=  array( $this, 'draw_invoice_preview_page' );
+        $myCapability = "edit_others_pages";
+        add_submenu_page($parent_slug, $page_title, $menu_title, $myCapability, $menu_slug, $function);
+
 
 	}
 
@@ -128,6 +136,10 @@ class lh_quotes
         include_once( LH_PLUGIN_PATH . '/admin/quote-preview.php' );
     }
 
+    function draw_invoice_preview_page()
+    {
+        include_once( LH_PLUGIN_PATH . '/admin/invoice-preview.php' );
+    }
 
 
 	// Register the metaboxes on projects CPT
@@ -135,34 +147,45 @@ class lh_quotes
 	{
 
         // Draw the preview quote box ONLY if its been saved
-
-        global $post;
-
-        if($post->post_status=="publish")
-        {
-
-            $id 			= 'quote_preview';
-            $title 			= 'Preview / Send Quote';
-            $drawCallback 	= array( $this, 'draw_quote_preview' );
-            $screen 		= 'lh_quotes';
-            $context 		= 'side';
-            $priority 		= 'default';
-            $callbackArgs 	= array();
-
-            add_meta_box(
-                $id,
-                $title,
-                $drawCallback,
-                $screen,
-                $context,
-                $priority,
-                $callbackArgs
-            );
-        }
-
-        $id 			= 'quote_status';
-        $title 			= 'Project Status';
+        $id 			= 'pre_status';
+        $title 			= 'Pre Build';
         $drawCallback 	= array( $this, 'draw_metabox_quote_status' );
+        $screen 		= 'lh_quotes';
+        $context 		= 'side';
+        $priority 		= 'default';
+        $callbackArgs 	= array();
+
+        add_meta_box(
+            $id,
+            $title,
+            $drawCallback,
+            $screen,
+            $context,
+            $priority,
+            $callbackArgs
+        );
+
+        $id 			= 'project_start_date_box';
+        $title 			= 'Project Start Date';
+        $drawCallback 	= array( $this, 'draw_metabox_project_start_date' );
+        $screen 		= 'lh_quotes';
+        $context 		= 'side';
+        $priority 		= 'default';
+        $callbackArgs 	= array();
+
+        add_meta_box(
+            $id,
+            $title,
+            $drawCallback,
+            $screen,
+            $context,
+            $priority,
+            $callbackArgs
+        );
+
+        $id 			= 'post_status';
+        $title 			= 'Post Build';
+        $drawCallback 	= array( $this, 'draw_metabox_post_build' );
         $screen 		= 'lh_quotes';
         $context 		= 'side';
         $priority 		= 'default';
@@ -214,6 +237,8 @@ class lh_quotes
 			$priority,
 			$callbackArgs
 		);
+
+
 
 
 	}
@@ -280,6 +305,7 @@ class lh_quotes
 
     function draw_metabox_quote_status($post, $metabox)
     {
+        global $post;
         $post_id = $post->ID;
 
         $quote_status = get_post_meta($post_id,'quote_status',true);
@@ -290,6 +316,11 @@ class lh_quotes
 
         if($quote_status==""){$quote_status="not_sent";}
 
+
+        if($post->post_status=="publish")
+        {
+            echo '<a href="options.php?page=quote-preview&id='.$post_id.'" class="button-secondary">Preview / send quote</a>';
+        }
 
         // Draw the quote status
         $status_array = lh_queries::get_quote_status_options();
@@ -349,6 +380,50 @@ class lh_quotes
         echo ek_forms::form_item($args);
 
 
+
+
+    }
+
+    function draw_metabox_post_build($post, $metabox)
+    {
+        $post_id = $post->ID;
+
+        $invoice_sent = get_post_meta($post_id,'invoice_sent',true);
+        $invoice_paid = get_post_meta($post_id,'invoice_paid',true);
+
+        if($post->post_status=="publish")
+        {
+            echo '<a href="options.php?page=invoice-preview&id='.$post_id.'" class="button-secondary">Preview / send invoice</a>';
+        }
+
+        // Draw the invoice status
+        $args = array(
+            "type" => "dropdown",
+            "name" => "invoice_sent",
+            "value" => $invoice_sent,
+            "ID" => "invoice_sent",
+            "label" => "Invoice Sent?",
+            "options" => array(
+                "" => "Not Sent",
+                "sent" => "Sent",
+            ),
+        );
+        echo ek_forms::form_item($args);
+
+        // Draw the invoice paid details
+        $args = array(
+            "type" => "dropdown",
+            "name" => "invoice_paid",
+            "value" => $invoice_paid,
+            "ID" => "invoice_paid",
+            "label" => "Invoice Paid?",
+            "options" => array(
+                "" => "Not yet paid",
+                "paid" => "Paid",
+            ),
+        );
+        echo ek_forms::form_item($args);
+
     }
 
 
@@ -365,6 +440,7 @@ class lh_quotes
         {
             $client_id = get_post_meta($post_id,'client_id',true);
         }
+
 
         $address1 = get_post_meta($client_id,'address1',true);
         $address2 = get_post_meta($client_id,'address2',true);
@@ -385,17 +461,27 @@ class lh_quotes
         echo '<input type="hidden" value = "'.$client_id.'" name="client_id" />';
 	}
 
-    function draw_quote_preview($post, $metabox)
+    function draw_metabox_project_start_date($post, $metabox)
     {
-        $post_id = $post->ID;
+        $quote_id = $post->ID;
+        $project_start_date = get_post_meta($quote_id,'project_start_date',true);
 
-        echo '<a href="options.php?page=quote-preview&id='.$post_id.'" class="button-primary">Preview / send quote</a>';
+        if($project_start_date=="")
+        {
+            $project_start_date = 'null';
+        }
+
+        $args = array(
+            "type" => "date",
+            "name" => "project_start_date",
+            "value" => $project_start_date,
+            "ID" => "project_start_date",
+            "label" => "",
+        );
+
+        echo ek_forms::form_item($args);
 
     }
-
-
-
-
 
 	// Save metabox data on edit slide
 	function save_meta ( $post_id )
@@ -496,6 +582,18 @@ class lh_quotes
         }
         update_post_meta( $post_id, 'accessories_status', $accessories_status );
 
+        // Update invouce status
+        $invoice_sent = $_POST['invoice_sent'];
+        update_post_meta( $post_id, 'invoice_sent', $invoice_sent );
+
+        // Update invouce paid
+        $invoice_paid = $_POST['invoice_paid'];
+        update_post_meta( $post_id, 'invoice_paid', $invoice_paid );
+
+        // Add Project start Date
+        $project_start_date = $_POST['project_start_date'];
+        update_post_meta( $post_id, 'project_start_date', $project_start_date );
+
         // Finally see if there is a descret key - if not create one
         $secret =  get_post_meta($post_id,'secret',true);
 
@@ -543,12 +641,10 @@ class lh_quotes
     function default_quote_content( $content, $post )
     {
 
-
         if ($post->post_type !== 'lh_quotes')
         {
             return $content;
         }
-
 
         if(!isset($_GET['client_id']) )
         {
@@ -556,7 +652,6 @@ class lh_quotes
         }
 
         $client_id = $_GET['client_id'];
-
 
         $client_name = get_the_title($client_id);
         $arr = explode(' ',trim($client_name));
@@ -568,7 +663,6 @@ class lh_quotes
         $content.= '[lh_image]<br/>';
         $content.= '[lh_quote]<br/><br/>';
 
-
         $content.='This quote is provided on the basis of the following assumptions:';
         $content.='<ul>';
         $content.='<li>Date of build will be agreed upon commission but is subject to the availability of timber</li>';
@@ -578,10 +672,7 @@ class lh_quotes
         $content.='<li>You will receive formal approval for the build from your immediate neighbours. </li>';
         $content.='</ul>';
 
-
-
-
-        $content.= '<br/>If you would like to proceed and commission your Little House, a deposit of £500 is required, made payable to Barrington Innovation,  sort code 309034 account number 32156268.  The deposit will be deducted from your invoice upon completion of the build.<br/><br/>';
+        $content.= '<br/>If you would like to proceed and commission your Little House, a deposit of £500 is required, made payable to Barrington Innovation,  sort code 309034 account number 32156268, paid a minimum of '.DEPOSIT_DAY_LIMIT.' days prior to build date.  The deposit will be deducted from your invoice upon completion of the build.<br/><br/>';
         $content.='To accept this quote and kick start your Little House build, please click on the link below.<br/><br/>';
         $content.= '[lh_accept_link]<br/><br/>';
 
@@ -594,7 +685,7 @@ class lh_quotes
     }
 
     // Prepopulate content of the email
-    function default_email_content($quote_id)
+    function default_quote_email_content($quote_id)
     {
 
         $client_info = lh_queries::get_client_from_quote($quote_id);
@@ -617,6 +708,28 @@ class lh_quotes
         return $content;
     }
 
+    // Prepopulate content of the invoice email
+    function default_invoice_email_content($quote_id)
+    {
+
+        $client_info = lh_queries::get_client_from_quote($quote_id);
+
+        $client_fullname = $client_info['name'];
+        // Get the first name
+        $first_name = lh_crm_utils::get_first_name($client_fullname);
+
+        $content = 'Dear '.$first_name.',<br/>';
+        $content.= 'It has been a pleasure to build your Little House!<br/>';
+        $content.= 'Please find attached your invoice for the outstanding balance.<br/>';
+
+        $content.= '<br/>Do not hesitate to get in touch if you have any questions.<br/><br/>';
+        $content.= 'Kind regards,<br/><br/>';
+        $content.= 'Ailsa Peron (Client Liaison)';
+
+        $content.=LH_SIGNATURE;
+
+        return $content;
+    }
 
 } //Close class
 ?>
