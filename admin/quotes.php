@@ -14,9 +14,9 @@ if($quote_count>=1)
     $new_quote_title.= ' (v'.$next_quote.')';
 }
 
-echo '<h1>'.$client_name.' : Quotes</h1>';
+echo '<h1>'.$client_name.' : Projects</h1>';
 
-echo '<a href="post-new.php?post_type=lh_quotes&client_id='.$client_id.'&post_title='.$new_quote_title.'" class="button-primary">Create a new quote</a><hr/>';
+echo '<a href="post-new.php?post_type=lh_quotes&client_id='.$client_id.'&post_title='.$new_quote_title.'" class="button-primary">Create a new project quote</a><hr/>';
 
 
 
@@ -36,6 +36,8 @@ else
         $deposit_status = $quote_info['deposit_status'];
         $materials_status = $quote_info['materials_status'];
         $accessories_status = $quote_info['accessories_status'];
+        $invoice_sent = $quote_info['invoice_sent'];
+        $invoice_paid = $quote_info['invoice_paid'];
         $build_date = $quote_info['build_date'];
 
         if($quote_status==""){$quote_status="not_sent";}
@@ -110,6 +112,32 @@ else
             break;
         }
 
+        switch ($invoice_sent)
+        {
+            case "sent";
+                $invoice_status_str =  '<span class="success_text"><i class="fas fa-check-circle"></i> Sent</span>';
+                $invoice_status_box_css = "success_background";
+            break;
+
+            default:
+                $invoice_status_str =  '<span class="fail_text">Not sent</span>';
+                $invoice_status_box_css = "fail_background";
+            break;
+        }
+
+        switch ($invoice_paid)
+        {
+            case "paid";
+                $invoice_paid_status_str =  '<span class="success_text"><i class="fas fa-check-circle"></i> Paid</span>';
+                $invoice_paid_status_box_css = "success_background";
+            break;
+
+            default:
+                $invoice_paid_status_str =  '<span class="fail_text">Not paid</span>';
+                $invoice_paid_status_box_css = "fail_background";
+            break;
+        }
+
         // Get the featured image
         $img_src = get_the_post_thumbnail_url( $quote_id, 'medium' );
 
@@ -124,10 +152,10 @@ else
         echo '<div class="quote_meta">';
         echo '<div class="quote_info">';
 
-        $status_boxes_array = array(
+        $status_boxes_array1 = array(
             array(
                 "title" => "Quote Price",
-                "value" => $quote_total,
+                "value" => "£".$quote_total,
                 "class" => "quote_price_class",
                 "box_class" => "test",
             ),
@@ -137,12 +165,11 @@ else
                 "class" => "quote_status_class",
                 "box_class" => $quote_status_box_css,
             ),
-            array(
-                "title" => "Deposit",
-                "value" => $deposit_status_str,
-                "class" => "quote_status_class",
-                "box_class" => $deposit_status_box_css,
-            ),
+        );
+
+        $status_boxes_array2 = array(
+
+
             array(
                 "title" => "Materials",
                 "value" => $materials_status_str,
@@ -155,12 +182,36 @@ else
                 "class" => "quote_status_class",
                 "box_class" => $accessories_status_box_css,
             ),
+
+        );
+
+        $status_boxes_array3 = array(
+            array(
+                "title" => "Deposit",
+                "value" => $deposit_status_str,
+                "class" => "quote_status_class",
+                "box_class" => $deposit_status_box_css,
+            ),
+
+            array(
+                "title" => "Invoice Status",
+                "value" => $invoice_status_str,
+                "class" => "quote_status_class",
+                "box_class" => $invoice_status_box_css,
+            ),
+
+            array(
+                "title" => "Final Payment",
+                "value" => $invoice_paid_status_str,
+                "class" => "quote_status_class",
+                "box_class" => $invoice_paid_status_box_css,
+            ),
         );
 
 
+        // Initial Cost
         echo '<div class="project_status_boxes">';
-
-        foreach ($status_boxes_array as $quote_meta)
+        foreach ($status_boxes_array1 as $quote_meta)
         {
             $this_title = $quote_meta['title'];
             $this_value = $quote_meta['value'];
@@ -172,8 +223,48 @@ else
             echo '<div class="status_box_title">'.$this_title.'</div>';
             echo '</div>';
         }
-
         echo '</div>';
+
+
+        if($quote_status=="accepted")
+        {
+
+            // pre build stuff
+            echo '<div class="quote_title">Pre Build</div>';
+
+            echo '<div class="project_status_boxes">';
+            foreach ($status_boxes_array2 as $quote_meta)
+            {
+                $this_title = $quote_meta['title'];
+                $this_value = $quote_meta['value'];
+                $this_class = $quote_meta['class'];
+                $this_box_class = $quote_meta['box_class'];
+
+                echo '<div class="status_box_item">';
+                echo '<div class="'.$this_class.' '.$this_box_class.' quote_meta_value">'.$this_value.'</div>';
+                echo '<div class="status_box_title">'.$this_title.'</div>';
+                echo '</div>';
+            }
+            echo '</div>';
+
+            // Payment stuff Cost
+            echo '<div class="quote_title">Payment</div>';
+
+            echo '<div class="project_status_boxes">';
+            foreach ($status_boxes_array3 as $quote_meta)
+            {
+                $this_title = $quote_meta['title'];
+                $this_value = $quote_meta['value'];
+                $this_class = $quote_meta['class'];
+                $this_box_class = $quote_meta['box_class'];
+
+                echo '<div class="status_box_item">';
+                echo '<div class="'.$this_class.' '.$this_box_class.' quote_meta_value">'.$this_value.'</div>';
+                echo '<div class="status_box_title">'.$this_title.'</div>';
+                echo '</div>';
+            }
+            echo '</div>';
+        }
 
 
         echo '<a href="post.php?post='.$quote_id.'&action=edit" class="button-secondary">View / edit quote</a>';

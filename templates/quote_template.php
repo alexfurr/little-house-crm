@@ -55,7 +55,7 @@ get_header(); ?>
 
                     $checklist_array = array(
                         "I have checked with the neighbours and they are happy with the design and location of build.",
-                        "I will pay the £500 deposit within 7 days of accepting this quote. I understand this will be deducted from my final invoice.",
+                        "I will pay the £500 deposit within ".DEPOSIT_DAY_LIMIT." days of accepting this quote. I understand this will be deducted from my final invoice.",
                         "I confirm there is access to the garden for 3m lengths of timber, either via a side gate or through the house.",
                         "I confirm water and electricity will be available on the day(s) of the build.",
 

@@ -23,10 +23,6 @@ class lh_crm
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_scripts' ) );
 
 
-
-
-
-
 	}
 
     // Loads the quote js for the quote calculator
@@ -45,6 +41,18 @@ class lh_crm
         wp_enqueue_script('lh_quotes_js', plugins_url('../js/quote.js',__FILE__) ); #
         wp_enqueue_style( 'imperial-font-awesome', '//use.fontawesome.com/releases/v5.2.0/css/all.css' );
 
+        // Calendar stuff
+        wp_enqueue_style('mbm_calendar_style', plugins_url('../css/calendar.css',__FILE__) );
+        wp_enqueue_script('mbm_calendar_scripts', plugins_url('../js/calendar.js',__FILE__) );
+
+        //Localise the JS file
+        $params = array(
+        'ajaxurl' => admin_url( 'admin-ajax.php' ),
+        'ajax_nonce' => wp_create_nonce('mbm_ajax_nonce'),
+        );
+
+
+        wp_localize_script( 'mbm_calendar_scripts', 'mbm_ajax_params', $params );
 
 
     }
@@ -103,6 +111,16 @@ class lh_crm
                     wp_redirect($redirectURL);
 
 
+                    exit();
+
+                break;
+
+                case "send_invoice":
+                    $quote_id = $_GET['id'];
+
+                    lh_actions::send_invoice($quote_id);
+                    $redirectURL = $home_url.'/wp-admin/options.php?page=invoice-preview&feedback=invoice_sent&id='.$quote_id;
+                    wp_redirect($redirectURL);
                     exit();
 
                 break;

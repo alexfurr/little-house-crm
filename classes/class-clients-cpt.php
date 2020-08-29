@@ -288,8 +288,6 @@ class lh_clients
         update_post_meta( $postID, 'town', $town );
 
 
-
-
 	}
 
 
@@ -298,8 +296,8 @@ class lh_clients
 	{
 
         unset($columns['date']);
-        $columns['activity'] = 'Touch Points';
-        $columns['quotes'] = 'Quotes';
+        $columns['activity'] = 'Timeline';
+        $columns['projects'] = 'Projects';
         $columns['date'] = 'Date';
 
 
@@ -314,10 +312,10 @@ class lh_clients
 	{
 		switch ($column_name)
 		{
-			case "quotes":
+			case "projects":
             {
                 $client_name = get_the_title($post_ID);
-                echo '<a href="options.php?page=lh-quotes&client-id='.$post_ID.'" class="button-primary">View / create quotes</a>';
+                echo '<a href="options.php?page=lh-quotes&client-id='.$post_ID.'" class="button-primary">Projects</a>';
                 //echo '<a class="button-primary" href="post-new.php?post_type=lh_quotes&client_id='.$post_ID.'&post_title=Quote for '.$client_name.'">Create quote</a>';
                 break;
             }
