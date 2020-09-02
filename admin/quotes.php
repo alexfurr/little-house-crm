@@ -22,7 +22,7 @@ echo '<a href="post-new.php?post_type=lh_quotes&client_id='.$client_id.'&post_ti
 
 if($quote_count==0)
 {
-    echo 'No quotes found';
+    echo 'No projects found';
 }
 else
 {

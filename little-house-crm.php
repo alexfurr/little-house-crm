@@ -63,7 +63,7 @@ define( 'DEPOSIT_DAY_LIMIT', 14 ); // Number of days after accepting the quote r
 
 
 define( 'LH_EMAIL_ADDRESS', "littlehousebristol@gmail.com" );
-define( 'LH_EMAIL_LOGO', "http://littlehousebristol.co.uk/wp-content/uploads/2017/01/cropped-logo_small.png" );
+define( 'LH_EMAIL_LOGO', "https://littlehousebristol.co.uk/wp-content/uploads/2020/09/logo_small.png" );
 
 define( 'LH_SIGNATURE', '
 <span style="color:green; font-weight:bold;">Little House</span> : <span style="color:#ccc">Bespoke Playhouses and Climbing Frames</span><br/>
@@ -71,7 +71,7 @@ Web :<a href="https://littlehousebristol.co.uk">littlehousebristol.co.uk</a><br/
 Facebook : <a href="https://facebook.com/littlehousebristol">facebook.com/littlehousebristol</a><br/>
 Phone : 07779 606934
 Email : <a href="mailto:info@littlehousebristol.co.uk">info@littlehousebristol.co.uk</a><br/>
-<img src="http://littlehousebristol.co.uk/wp-content/uploads/2017/01/cropped-logo_small.png">' );
+<img src="https://littlehousebristol.co.uk/wp-content/uploads/2020/09/logo_small.png">' );
 
 
 ?>

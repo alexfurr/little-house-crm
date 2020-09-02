@@ -90,10 +90,10 @@ class lh_crm_pdf
         $wp_basepath = $WPuploads['basedir'];
         $wp_baseurl = $WPuploads['baseurl'];
 
-        $create_path = $wp_basepath . '/' .$full_path. '/' . $pdfFileName;
+        $create_path = $wp_basepath . '/' .$full_path;
 
 		if ( ! file_exists( $create_path ) ) {
-			mkdir( $create_path, 0777, true );
+			echo mkdir( $create_path, 0777, true );
 		}
 
 		//temp set server limit and timeout
@@ -102,9 +102,13 @@ class lh_crm_pdf
 		ini_set("allow_url_fopen", "1");
 
 		//output PDF document.
-		$pdf->Output( $wp_basepath . '/' .$full_path. '/' . $pdfFileName, 'F');
 
-		return $wp_basepath.'/'.$full_path.'/'.$pdfFileName;
+        $final_file_path = $wp_basepath . '/' .$full_path. '/' . $pdfFileName;
+        $final_file_url = $wp_baseurl . '/' .$full_path. '/' . $pdfFileName;
+
+		$pdf->Output( $final_file_path, 'F');
+
+		return $final_file_url;
     }
 
 }
