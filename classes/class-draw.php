@@ -17,14 +17,15 @@ class lh_draw
         // Get the featured image
         $img_src = get_the_post_thumbnail_url( $quote_id, 'medium' );
         $img = '';
-        if( $img_src ) {
-            $img = '<img src = "'.$img_src.'" style="display:block; margin-left:50px; margin-right:auto; width:640px;"><br/>&nbsp;<br/>&nbsp;<br/>';
+        if( $img_src )
+        {
+            $img='<table><tr><td style="text-align:center;"><img src= "'.$img_src.'" width="400px;"></td></tr></table><br/><p></p><br/><br/>';
         }
 
         // get the quote breakdown and replace the lh_quote
         $item_lookup = lh_queries::get_quote_items();
-        $quote_breakdown_str='<div style="padding:30px;">';
-        $quote_breakdown_str.= '<table style="border-collapse: collapse; font-size:13px;  margin-left: auto;   margin-right: auto; width:80%; margin-left:auto; margin-right:auto;">';
+        $quote_breakdown_str='<div style="cell-padding:30px;">';
+        $quote_breakdown_str.= '<table style="border-collapse: cell-spacing:100px; cell-spacing:100px; collapse; font-size:13px;  margin-left: auto;   margin-right: auto; width:80%; margin-left:auto; margin-right:auto;">';
         $quote_breakdown_str.= '<tr style="color:#acd037;font-weight:bold;"><td style="border-bottom:3px solid #666; padding-left:8px; width:40%;">Item<br/>&nbsp;</td><td style="border-bottom:3px solid #666;">Quantity</td><td style="border-bottom:3px solid #666;">Cost</td><td style="border-bottom:3px solid #666;"></td></tr>';
 
         $quote_breakdown_array = get_post_meta($quote_id,'quote_breakdown',true);
@@ -54,21 +55,23 @@ class lh_draw
                     $item_quantity = 'Fixed';
                 break;
             }
-            $quote_breakdown_str.= '<tr style=" border-bottom:1px solid #ccc;"><td style="'.$cellpadding.'border-bottom:1px solid #666;">'.$item_name.'</td><td style="'.$cellpadding.'border-bottom:1px solid #666;">'.$item_quantity.'</td><td style="'.$cellpadding.'border-bottom:1px solid #666;">'.$unit_cost.'</td><td style="font-weight:bold;  border-bottom:1px solid #666;">£'.$this_subtotal.'</td></tr>';
+            $quote_breakdown_str.= '<tr><td style="'.$cellpadding.'border-bottom:1px solid #ccc; height:20;">'.$item_name.'</td><td style="'.$cellpadding.'border-bottom:1px solid #ccc;">'.$item_quantity.'</td><td style="'.$cellpadding.'border-bottom:1px solid #ccc;">'.$unit_cost.'</td><td style="font-weight:bold;  border-bottom:1px solid #ccc;">£'.$this_subtotal.'</td></tr>';
         }
         $quote_breakdown_str.='<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>';
-        $quote_breakdown_str.='<tr style="font-size:20px; font-weight:bold;"><td '.$cellpadding.'>Total</td><td></td><td></td><td>£'.$quote_total.'</td></tr>';
+        $quote_breakdown_str.='<tr style="font-size:20px; font-weight:bold;"><td style="'.$cellpadding.'">Total</td><td></td><td></td><td>£'.$quote_total.'</td></tr>';
         $quote_breakdown_str.= '</table></div>';
 
         $quote_link = get_the_permalink($quote_id);
         $secret = get_post_meta($quote_id, 'secret', true);
 
         $accept_link = '';
-        $accept_link='<table cellspacing="0" cellpadding="15" border="0" style="width:200px; background-color:green; text-align:center">';
-        $accept_link.='<tr><td>';
-        $accept_link.='<a href="'.$quote_link.'?secret='.$secret.'" style="text-decoration:none; color:#fff;">';
+        $accept_link='<table width="100%" ><tr>';
+        $accept_link.='<td width="150px;"></td>';
+        $accept_link.='<td style="text-align:center; background-color:green;">';
+        $accept_link.='<a href="'.$quote_link.'?secret='.$secret.'" style="text-decoration:none; font-size:20px; color:#fff; padding:20px;">';
         $accept_link.='Click here to accept this quote</a>';
-        $accept_link.='</td></tr></table>';
+        $accept_link.='</td>';
+        $accept_link.='</tr></table>';
 
         // replace the lh_iamge with the img
         $content = str_replace("[lh_image]", $img, $content);
@@ -121,7 +124,7 @@ class lh_draw
     public static function draw_quote($quote_id)
     {
         // Some default vars for the HTML emai
-        $cellpadding = ' style="padding:5px;" ';
+        $cellpadding = ' style="padding:15px;" ';
 
 
         $quote_info = get_page( $quote_id );
@@ -176,11 +179,11 @@ class lh_draw
                 break;
 
             }
-            $quote_breakdown_str.= '<tr style=" border-bottom:1px solid #ccc;"><td '.$cellpadding.'>'.$item_name.'</td><td>'.$item_quantity.'</td><td>'.$unit_cost.'</td><td style="font-weight:bold;">£'.$this_subtotal.'</td></tr>';
+            $quote_breakdown_str.= '<tr style="font-size:20px; border-bottom:1px solid #ccc;"><td '.$cellpadding.'>'.$item_name.'</td><td>'.$item_quantity.'</td><td>'.$unit_cost.'</td><td style="font-weight:bold;">£'.$this_subtotal.'</td></tr>';
 
 
         }
-        $quote_breakdown_str.='<tr style="font-size:20px; font-weight:bold;"><td '.$cellpadding.'>Total</td><td></td><td></td><td>£'.$quote_total.'</td></tr>';
+        $quote_breakdown_str.='<tr style="font-size:20px; font-weight:bold;"><td>Total123</td><td></td><td></td><td>£'.$quote_total.'</td></tr>';
 
         $quote_breakdown_str.= '</table></div>';
 

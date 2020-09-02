@@ -87,13 +87,14 @@ class lh_crm_pdf
 		//$basePath = $_SERVER['DOCUMENT_ROOT'] . 'ssapdf_tmp/blog' . $blogID;
 		$WPuploads = wp_upload_dir();
 
+
         $wp_basepath = $WPuploads['basedir'];
         $wp_baseurl = $WPuploads['baseurl'];
 
         $create_path = $wp_basepath . '/' .$full_path;
 
 		if ( ! file_exists( $create_path ) ) {
-			echo mkdir( $create_path, 0777, true );
+			mkdir( $create_path, 0777, true );
 		}
 
 		//temp set server limit and timeout
