@@ -109,7 +109,10 @@ class lh_crm_pdf
 
 		$pdf->Output( $final_file_path, 'F');
 
-		return $final_file_url;
+		return array(
+            "path" => $final_file_path,
+            "URL" => $final_file_url,
+        );
     }
 
 }

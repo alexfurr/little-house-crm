@@ -16,11 +16,15 @@ class lh_actions
             "doc_type" => "quote",
             "quote_id" => $quote_id,
         );
-        $quote_pdf = lh_crm_pdf::create_pdf($args);
+        $quote_info = lh_crm_pdf::create_pdf($args);
+        $quote_pdf = $quote_info['path'];
+
 
 
         $email_subject = $_POST['email_subject'];
         $email_content = nl2br($_POST['email_content']);
+        $email_content = stripslashes($email_content);
+
 
         // Add proper link breaks i.e. convert BR to /n
        // $breaks = array("<br />","<br>","<br/>");
@@ -29,11 +33,11 @@ class lh_actions
 
         $headers = array('Content-Type: text/html; charset=UTF-8'); // Make it send as HTML
         $attachments = array($quote_pdf);
+
         wp_mail($client_email, $email_subject, $email_content, $headers, $attachments);
 
         // Finally set the quote status to sent
         update_post_meta( $quote_id, 'quote_status', 'pending' );
-
 
         // Update post date it was sent
         update_post_meta( $quote_id, 'quote_date_sent', date('Y-m-d H:i:s') );

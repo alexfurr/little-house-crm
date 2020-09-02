@@ -25,7 +25,8 @@ $args = array(
     "doc_type" => "quote",
     "quote_id" => $quote_id,
 );
-$quote_url = lh_crm_pdf::create_pdf($args);
+$quote_info = lh_crm_pdf::create_pdf($args);
+$quote_url = $quote_info['URL'];
 
 $default_subject = 'Your Little House Quote';
 
