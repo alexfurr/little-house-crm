@@ -55,6 +55,38 @@ class lh_crm_utils
 
     }
 
+    /**
+     *	Takes a cmplete filename with ext and then returns sanitized name
+     *  Takes optional var to append at the end of the file for making unique e.g. post ID
+     *	---
+     */
+    public static function sanitize_filename($filename, $append='')
+    {
+        $file_parts = pathinfo($filename);
+        $new_filename =  lh_crm_utils::create_filename($file_parts['filename']);
+        $extension =  $file_parts['extension'];
+        if($append){$new_filename=$new_filename.'_'.$append;}
+        $new_filename = $new_filename.'.'.$extension;
+
+        return $new_filename;
+
+    }
+
+    /**
+ *	Removes non alhpanumeric characters and replaces whitespace with underscore
+ *	---
+ */
+public static function create_filename($input)
+{
+    $output = trim($input);
+    $output = strtolower($output);
+    $output = preg_replace("/[^A-Za-z0-9 ]/", '', $output);
+    $output = preg_replace('/\s+/', '_', $output);
+
+    return $output;
+
+}
+
 }
 
 

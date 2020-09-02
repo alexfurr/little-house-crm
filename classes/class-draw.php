@@ -2,12 +2,12 @@
 
 class lh_draw
 {
-    
-    
+
+
     public static function draw_quote_for_pdf( $quote_id )
     {
         // Some default vars for the HTML emai
-        $cellpadding = ' style="padding:5px;" ';
+        $cellpadding = 'padding:15px;';
         $primary_color = "#acd037";
 
         $quote_info = get_page( $quote_id );
@@ -24,8 +24,8 @@ class lh_draw
         // get the quote breakdown and replace the lh_quote
         $item_lookup = lh_queries::get_quote_items();
         $quote_breakdown_str='<div style="padding:30px;">';
-        $quote_breakdown_str.= '<table style="border-collapse: collapse; font-size:13px;  margin-left: auto;   margin-right: auto; width:100%;">';
-        $quote_breakdown_str.= '<tr style="color:#acd037;font-weight:bold;"><td style="padding-left:8px; width:40%;">Item<br/>&nbsp;</td><td>Quantity</td><td>Cost</td><td></td></tr>';
+        $quote_breakdown_str.= '<table style="border-collapse: collapse; font-size:13px;  margin-left: auto;   margin-right: auto; width:80%; margin-left:auto; margin-right:auto;">';
+        $quote_breakdown_str.= '<tr style="color:#acd037;font-weight:bold;"><td style="border-bottom:3px solid #666; padding-left:8px; width:40%;">Item<br/>&nbsp;</td><td style="border-bottom:3px solid #666;">Quantity</td><td style="border-bottom:3px solid #666;">Cost</td><td style="border-bottom:3px solid #666;"></td></tr>';
 
         $quote_breakdown_array = get_post_meta($quote_id,'quote_breakdown',true);
         foreach ($quote_breakdown_array as $item_key => $item_quantity) {
@@ -50,11 +50,11 @@ class lh_draw
 
                 case "fixed":
                     $this_subtotal= $item_quantity;
+                    $unit_cost = '£'.$item_quantity;
                     $item_quantity = 'Fixed';
-                    $unit_cost = '';
                 break;
             }
-            $quote_breakdown_str.= '<tr style=" border-bottom:1px solid #ccc;"><td '.$cellpadding.'>'.$item_name.'</td><td>'.$item_quantity.'</td><td>'.$unit_cost.'</td><td style="font-weight:bold;">£'.$this_subtotal.'</td></tr>';
+            $quote_breakdown_str.= '<tr style=" border-bottom:1px solid #ccc;"><td style="'.$cellpadding.'border-bottom:1px solid #666;">'.$item_name.'</td><td style="'.$cellpadding.'border-bottom:1px solid #666;">'.$item_quantity.'</td><td style="'.$cellpadding.'border-bottom:1px solid #666;">'.$unit_cost.'</td><td style="font-weight:bold;  border-bottom:1px solid #666;">£'.$this_subtotal.'</td></tr>';
         }
         $quote_breakdown_str.='<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>';
         $quote_breakdown_str.='<tr style="font-size:20px; font-weight:bold;"><td '.$cellpadding.'>Total</td><td></td><td></td><td>£'.$quote_total.'</td></tr>';
@@ -62,7 +62,13 @@ class lh_draw
 
         $quote_link = get_the_permalink($quote_id);
         $secret = get_post_meta($quote_id, 'secret', true);
-        $accept_link = '<a href="'.$quote_link.'?secret='.$secret.'">Click here to accept the quote</a>';
+
+        $accept_link = '';
+        $accept_link='<table cellspacing="0" cellpadding="15" border="0" style="width:200px; background-color:green; text-align:center">';
+        $accept_link.='<tr><td>';
+        $accept_link.='<a href="'.$quote_link.'?secret='.$secret.'" style="text-decoration:none; color:#fff;">';
+        $accept_link.='Click here to accept this quote</a>';
+        $accept_link.='</td></tr></table>';
 
         // replace the lh_iamge with the img
         $content = str_replace("[lh_image]", $img, $content);
@@ -87,7 +93,7 @@ class lh_draw
         // Main content outside header
         $html.='<table cellspacing="0" cellpadding="1" border="0" style="width:100%; border-color:#fff; margin-left: auto;   margin-right:auto; border-collapse: collapse;">';
         $html.='<tr><td style="text-align: right; font-size:11px;">';
-        $html.= "Quote # 123<br/>Date : ".date('d/m/y');
+        $html.= "Quote Ref : LH_".$quote_id."<br/>Date : ".date('d/m/Y');
         $html.= '</td></tr>';
         $html.= '<tr><td style="font-size:12px;">';
         $html.= '<strong>'.$client_name.'</strong><br/>';
@@ -108,9 +114,9 @@ class lh_draw
 
         return $html;
     }
-    
-    
-    
+
+
+
     // Draws the main quote in old school HTML with tables so t's compaitble with the PDF creator
     public static function draw_quote($quote_id)
     {
@@ -210,8 +216,8 @@ class lh_draw
 
 
         $html.= '<table width="100%" style="margin:0px">';
-        
-        
+
+
         $html.='<tr><td style="padding:0px; border:0px;">';
         // Header
         $logo_src = LH_EMAIL_LOGO;
@@ -224,10 +230,10 @@ class lh_draw
         $html.='</tr></table>';
         // End of header
         $html.='</td></tr>';
-        
-        
-        
-        
+
+
+
+
         $html.= '<tr><td>';
 
         // Main content outside header

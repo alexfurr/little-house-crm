@@ -141,8 +141,12 @@ body#tinymce {
 {
     margin-left:auto;
     margin-right:auto;
-    width:80%;
+    width:95%;
+    margin-bottom:30px;
+    font-size:18px;
 }
+
+
 
 #quote_checklist
 {
@@ -152,6 +156,12 @@ body#tinymce {
 ul#quote_checklist
 {
     list-style:none;
+}
+
+#quote_checklist li
+{
+    border-bottom:1px solid #ccc;
+    padding:7px 0px;
 }
 
 #quote_checklist input

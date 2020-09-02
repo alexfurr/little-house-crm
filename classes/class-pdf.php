@@ -4,7 +4,7 @@
 class lh_crm_pdf
 {
 
-    public static function create_pdf($quote_id)
+    public static function create_pdf($args)
     {
 
     	//set up some default style options
@@ -19,25 +19,33 @@ class lh_crm_pdf
     	$link_hex = '#3333ff';
 
 
-
-        $filename = 'test';
-
-
         // Some default vars for the HTML emai
         $cellpadding = ' style="padding:5px;" ';
 
         $primary_color = "#acd037";
- 	//clean up site title to use as filename
-    	$pdfFileName = preg_replace( "/&#?[a-z0-9]{2,8};/i", "", $filename );
-    	$pdfFileName = str_replace( " ", "-",  $pdfFileName );
-    	$pdfFileName = str_replace( "/", "_",  $pdfFileName );
-
-    	$pdfFileName = preg_replace('!\.pdf$!i', '', $pdfFileName );
-    	$pdfFileName = $pdfFileName . ".pdf";
-    	//$pdfFileName = "FrontendTesting.pdf";
 
 
+        $doc_type = $args['doc_type'];
 
+        switch ($doc_type)
+        {
+            case "quote":
+
+                $quote_id = $args['quote_id'];
+                $client_info = lh_queries::get_client_from_quote($quote_id);
+                $client_name = $client_info['name'];
+                $client_id = $client_info['client_id'];
+
+                $full_path = 'mbm/clients/'.$client_id.'/quotes';
+
+                // Create the filename
+                $filename_temp = $quote_id.' Little House Quote '.$client_name.' '.date('Y-m-d').'.pdf';
+                $pdfFileName = lh_crm_utils::sanitize_filename($filename_temp);
+                $htmlStr = lh_draw::draw_quote_for_pdf($quote_id);
+
+            break;
+
+        }
 
     	//--- init TCpdf ---------------------------------------
     	//$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -64,41 +72,6 @@ class lh_crm_pdf
     	// set image scale factor
     	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-    	// set default font subsetting mode
-    	//$pdf->setFontSubsetting( true );
-
-
-
-
-    	//--- build the contents ---------------------------------------
-
-
-        //$htmlStr = lh_draw::draw_quote($quote_id);
-        $htmlStr = lh_draw::draw_quote_for_pdf($quote_id);
-        
-        /*
-        // Header
-        $html = '';
-        $logo_src = 'http://localhost/littlehouse/wp-content/uploads/2020/08/logo_white_back.png';
-        $html.='<table style="margin:0px; background:'.$primary_color.';color:#fff;">';
-        $html.='<tr>';
-        $html.='<td style="width:70px; border:0px;">';
-        $html.='<img src = "'.$logo_src.'" height="60px" width="60px">';
-        $html.='</td>';
-        $html.='<td style="border:0px; width:100%; font-size:24px;">Little House</td>';
-
-		//set some extra document css
-		$cssStr = '<style type="text/css"> ';
-		$cssStr .= '.pageBreak { page-break-after: always; } ';
-		$cssStr .= '* { font-family:' . $text_font . ';	} ';
-		$cssStr .= 'a { color:' . $link_hex . '; } ';
-		$cssStr .= 'a:visited { color:' . $link_hex . '; } ';
-		$cssStr .= ' </style>';
-
-        
-        $htmlStr = 'PDF content';
-        */
-        
 		$pdf->AddPage();
 		$pdf->writeHTML	(
 			//$cssStr . $html,
@@ -110,14 +83,17 @@ class lh_crm_pdf
 			''
 		);
 
-
-
 		//--- output the PDF ---------------------------------------
 		//$basePath = $_SERVER['DOCUMENT_ROOT'] . 'ssapdf_tmp/blog' . $blogID;
 		$WPuploads = wp_upload_dir();
-		$basePath = $WPuploads['basedir'];
-		if ( ! file_exists( $basePath ) ) {
-			mkdir( $basePath, 0777, true );
+
+        $wp_basepath = $WPuploads['basedir'];
+        $wp_baseurl = $WPuploads['baseurl'];
+
+        $create_path = $wp_basepath . '/' .$full_path. '/' . $pdfFileName;
+
+		if ( ! file_exists( $create_path ) ) {
+			mkdir( $create_path, 0777, true );
 		}
 
 		//temp set server limit and timeout
@@ -126,9 +102,9 @@ class lh_crm_pdf
 		ini_set("allow_url_fopen", "1");
 
 		//output PDF document.
-		$pdf->Output( $basePath . '/' . $pdfFileName, 'F');
+		$pdf->Output( $wp_basepath . '/' .$full_path. '/' . $pdfFileName, 'F');
 
-		return $basePath.'/'.$pdfFileName;
+		return $wp_basepath.'/'.$full_path.'/'.$pdfFileName;
     }
 
 }

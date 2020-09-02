@@ -10,8 +10,13 @@ class lh_actions
         $client_email = $client_meta['email'];
 
 
-        $quotes_folder = lh_crm_utils::get_quotes_upload_folder();
-        $pdf = $quotes_folder['file_dir'].'/test.pdf';
+        //$quotes_folder = lh_crm_utils::get_quotes_upload_folder();
+       // $pdf = $quotes_folder['file_dir'].'/test.pdf';
+        $args = array(
+            "doc_type" => "quote",
+            "quote_id" => $quote_id,
+        );
+        $quote_pdf = lh_crm_pdf::create_pdf($args);
 
 
         $email_subject = $_POST['email_subject'];
@@ -23,7 +28,7 @@ class lh_actions
 
 
         $headers = array('Content-Type: text/html; charset=UTF-8'); // Make it send as HTML
-        $attachments = array($pdf);
+        $attachments = array($quote_pdf);
         wp_mail($client_email, $email_subject, $email_content, $headers, $attachments);
 
         // Finally set the quote status to sent

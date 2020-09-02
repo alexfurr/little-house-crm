@@ -19,7 +19,13 @@ if (filter_var($client_email, FILTER_VALIDATE_EMAIL)) {
     die();
 }
 
-$email_text = 'test';
+
+// Create the quote PDF
+$args = array(
+    "doc_type" => "quote",
+    "quote_id" => $quote_id,
+);
+$quote_url = lh_crm_pdf::create_pdf($args);
 
 $default_subject = 'Your Little House Quote';
 
@@ -43,19 +49,20 @@ wp_editor(
   )
 );
 
+echo '<h3>Attached PDF quote</h3>';
+echo '<span class="smallText">This PDF will be sent as an attachment to the email</span><br/>';
+echo '<a href="'.$quote_url.'" target="blank"><i class="fas fa-file-pdf fa-3x"></i> View PDF</a><hr/>';
+
 echo '<input type="submit" value="Send quote" class="button-primary" />';
 echo '</form>';
 echo '</div>';
 
-$quote_content = lh_draw::draw_quote($quote_id);
-echo '<h2>PDF Preview</h2>';
-echo '<span class="smallText">This PDF will be sent as an attachment to the email</span>';
-echo '<div class="quote_preview_wrap">';
-echo $quote_content;
-echo '</div>';
+//$quote_content = lh_draw::draw_quote_for_pdf($quote_id);
+
+//echo '<div class="quote_preview_wrap">';
+//echo $quote_content;
+//echo '</div>';
 
 
-
-echo lh_crm_pdf::create_pdf($quote_id);
 
 ?>

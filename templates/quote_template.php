@@ -61,7 +61,16 @@ get_header(); ?>
 
                     );
 
-                    echo 'We are excited that you would like to proceed with your Little House! We just need you to confirm the following (you can return to this page at any time):';
+                    // Get the client info
+                    $client_info = lh_queries::get_client_from_quote($quote_id);
+                    $first_name = lh_crm_utils::get_first_name($client_info['name']);
+
+                    echo '<div style="font-size:50px; padding:20px;">Hi '.$first_name.'!</div><br/>';
+                    echo '<div style="padding-bottom:20px;">';
+                    echo 'We are excited that you would like to proceed with your Little House!<br/>';
+                    echo 'We just need you to <strong>confirm and tick</strong> the following (you can return to this page at any time):';
+                    echo '</div>';
+
 
                     $i=1;
                     echo '<div class="quote_checklist_div">';
@@ -80,14 +89,14 @@ get_header(); ?>
                 }
                 elseif($quote_status=="accepted")
                 {
-                    echo 'Thank you! We will be in touch shortly to finalise a build date if not already done';
+                    echo '<h2>Thank you!</h2>We will be in touch shortly to finalise a build date if not already done.';
                 }
                 echo '</div>';
 
-                $quote_content = lh_draw::draw_quote($quote_id);
-                echo '<div class="quote_preview_wrap">';
-                echo $quote_content;
-                echo '</div>';
+                //$quote_content = lh_draw::draw_quote($quote_id);
+                //echo '<div class="quote_preview_wrap">';
+                //echo $quote_content;
+                //echo '</div>';
             }
 
             ?>
